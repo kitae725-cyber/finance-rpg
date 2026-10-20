@@ -1,0 +1,166 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>미션! 재정담당관의 하루 2.2</title><style>
+*{box-sizing:border-box}body{margin:0;background:#101b30;color:#f4f7ff;font-family:Malgun Gothic,Arial,sans-serif}main{max-width:940px;margin:auto;padding:18px}h1{font-size:clamp(23px,4vw,37px);margin:12px 0}header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}button{cursor:pointer;font:inherit}button:focus-visible{outline:3px solid #f9dc75;outline-offset:3px}.small{font-size:13px;color:#bbcae2}.bar{height:12px;background:#2e405b;border-radius:20px;overflow:hidden;margin:15px 0}.bar>div{height:100%;background:#f6cb59;transition:width .4s}.stats{display:flex;gap:10px;flex-wrap:wrap}.pill{background:#273b5b;padding:9px 13px;border-radius:12px}.scene{position:relative;min-height:360px;overflow:hidden;border-radius:23px;background:linear-gradient(160deg,#d9e8fb,#8eb2d9);border:5px solid #e7f2ff;color:#172f50;box-shadow:0 18px 35px #0005}.window{position:absolute;right:9%;top:10%;width:34%;height:46%;background:linear-gradient(#a6c9ee,#e6f3ff);border:10px solid #f2f7ff;border-radius:12px}.desk{position:absolute;bottom:10%;right:0;width:100%;height:21%;background:#587ea3;border-top:12px solid #304d73}.avatar{position:absolute;bottom:19%;left:7%;font-size:clamp(100px,20vw,165px);filter:drop-shadow(0 10px 8px #20344c44);animation:enter .55s both,hover 2.4s 0.6s ease-in-out infinite alternate}.bubble{position:absolute;right:4%;top:15%;width:56%;min-height:125px;background:#fff;border:3px solid #23466d;border-radius:22px;padding:17px;box-shadow:7px 8px 0 #203f6422;animation:enter .5s .1s both}.speaker{color:#2260a1;font-weight:bold;margin-bottom:9px}.location{position:absolute;top:10px;left:10px;background:#1a4169;color:white;border-radius:18px;padding:7px 12px;font-size:12px}.panel{margin-top:16px;background:#1d2d49;border-radius:18px;padding:22px}.choice{display:block;width:100%;background:#eef5ff;border:2px solid transparent;border-radius:12px;padding:15px;margin:10px 0;text-align:left;color:#203452}.choice:hover:not(:disabled){background:#fff2c7;border-color:#e5b94a}.choice:disabled{opacity:.7}.choice.selected{border-color:#ffcf57;opacity:1}.primary{background:#f6cc60;border:0;border-radius:12px;padding:13px 24px;color:#1d2c42;font-weight:bold}.feedback{display:none;padding:15px;background:#2a4264;border-left:5px solid #7de4bc;border-radius:10px;margin-top:14px;line-height:1.6}.controls{display:flex;gap:9px;flex-wrap:wrap}.control{background:#344e72;color:white;border:1px solid #61789c;border-radius:9px;padding:9px 12px}.center{text-align:center;padding:55px 20px}.hidden{display:none!important}.burst{position:fixed;top:30%;left:50%;font-size:60px;pointer-events:none;animation:burst 1s forwards;z-index:10}@keyframes enter{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}@keyframes hover{to{transform:translateY(-7px)}}@keyframes burst{to{opacity:0;transform:translate(-50%,-140px) scale(2)}}@media(max-width:580px){.scene{min-height:320px}.bubble{top:19%;width:60%;font-size:14px}.avatar{left:0}.panel{padding:15px}}
+</style></head><body><main><header><div><h1>🎖️ 미션! 재정담당관의 하루 <small>2.2</small></h1><div class="small">웹툰풍 RPG · 캐릭터 음성 · 효과음 · 애니메이션</div></div><div class="controls"><button class="control" id="voice" onclick="toggleVoice()">🔊 음성 켜짐</button><button class="control" id="sound" onclick="toggleSound()">🎵 효과음 켜짐</button><button class="control" id="music" onclick="toggleMusic()">🎼 배경음악 켜짐</button></div></header>
+<section id="start" class="panel center"><div style="font-size:100px">🪖</div><h2>신임 재정담당관님, 출근하셨습니까?</h2><p>예상치 못한 사건들이 기다리고 있습니다.<br>열 가지 상황을 해결하고 최종 평가를 받아보세요!</p><button class="primary" onclick="startGame()">🚀 임무 시작</button><p class="small">교육용 가상 시나리오 · 실제 규정에 대한 검증을 거친 평가문항은 아닙니다.</p></section>
+<section id="game" class="hidden"><div class="stats"><span class="pill" id="mission"></span><span class="pill" id="score"></span><span class="pill" id="trust"></span></div><div class="bar"><div id="progress"></div></div><div class="scene"><div class="window"></div><div class="desk"></div><div class="location" id="location"></div><div class="avatar" id="avatar"></div><div class="bubble"><div class="speaker" id="speaker"></div><div id="dialogue"></div></div></div><div class="panel"><h2 id="title"></h2><p id="question"></p><div id="choices"></div><div class="feedback" id="feedback"></div><button class="primary hidden" id="next" onclick="nextScene()">다음 임무 ▶</button></div></section>
+<section id="result" class="panel center hidden"><div style="font-size:85px">🏆</div><h2>임무 완료!</h2><h1 id="grade"></h1><p id="summary"></p><p id="review"></p><button class="primary" onclick="startGame()">다시 도전하기</button><button class="control" onclick="saveResult()">결과 텍스트 저장</button></section><p class="small">오프라인 시제품: 결과는 서버로 전송되지 않습니다. 음성합성은 브라우저·운영체제의 한국어 음성 지원 여부에 따라 달라집니다. 외부에 공개하기 전 문제·정답·해설을 현행 규정에 맞춰 검증하십시오.</p></main><script>
+/* 아래 scenes에서 대사, 문제, 선택지, 정답, 해설을 수정하세요. */
+const scenes = [
+  {
+    "location": "첫 출근",
+    "avatar": "👨‍✈️",
+    "speaker": "지휘관",
+    "title": "첫 임무",
+    "dialogue": "재정담당관! 관서운영경비 교부 준비는 잘되고 있나?",
+    "question": "교부 준비 과정에서 가장 먼저 확인할 것은?",
+    "choices": [
+      "소요 산출 근거와 관련 절차를 확인한다",
+      "지난달 금액을 그대로 요청한다",
+      "일단 넉넉하게 요청한다"
+    ],
+    "answer": 0,
+    "tip": "소요 판단과 절차 확인은 업무의 기본입니다."
+  },
+  {
+    "location": "교부 확인",
+    "avatar": "👩‍💼",
+    "speaker": "재정담당관",
+    "title": "금액이 다릅니다",
+    "dialogue": "확인한 소요 금액과 자료상 금액이 다른데요?",
+    "question": "어떻게 처리하시겠습니까?",
+    "choices": [
+      "일단 그대로 진행한다",
+      "차이의 원인을 확인하고 필요한 정정 절차를 진행한다",
+      "관련 기록을 삭제한다"
+    ],
+    "answer": 1,
+    "tip": "금액 불일치는 원인을 확인하고 정해진 절차로 처리합니다."
+  },
+  {
+    "location": "구매 요청",
+    "avatar": "🧑‍💼",
+    "speaker": "행정담당자",
+    "title": "긴급 물품 구매",
+    "dialogue": "당장 필요한 물품이 있는데 오늘 구매할 수 있을까요?",
+    "question": "가장 먼저 무엇을 검토하시겠습니까?",
+    "choices": [
+      "바로 구매한다",
+      "필요성·집행 가능 여부·승인 절차를 확인한다",
+      "요청자에게 모두 맡긴다"
+    ],
+    "answer": 1,
+    "tip": "긴급 상황에서도 적용되는 절차를 확인해야 합니다."
+  },
+  {
+    "location": "지휘관실",
+    "avatar": "👨‍✈️",
+    "speaker": "지휘관",
+    "title": "빠르게 처리해 주게",
+    "dialogue": "서류는 나중에 준비하고 먼저 처리하면 안 되겠나?",
+    "question": "어떻게 설명하시겠습니까?",
+    "choices": [
+      "규정에 맞는 신속한 처리 방법을 검토하겠습니다",
+      "모든 절차를 생략하겠습니다",
+      "무조건 안 됩니다"
+    ],
+    "answer": 0,
+    "tip": "신속성과 적법성을 함께 고려합니다."
+  },
+  {
+    "location": "서류 검토",
+    "avatar": "👩‍💼",
+    "speaker": "재정담당관",
+    "title": "증빙자료가 부족해요",
+    "dialogue": "거래 내용을 확인하기에는 증빙이 부족해 보이네요.",
+    "question": "어떤 조치가 적절합니까?",
+    "choices": [
+      "금액이 적으니 진행한다",
+      "자료를 임의로 수정한다",
+      "필요한 자료의 보완을 요청한다"
+    ],
+    "answer": 2,
+    "tip": "증빙은 지출의 적정성을 확인할 수 있어야 합니다."
+  },
+  {
+    "location": "중복 확인",
+    "avatar": "🧑‍💻",
+    "speaker": "행정담당자",
+    "title": "같은 거래인가요?",
+    "dialogue": "이전에 제출된 자료와 비슷한데요?",
+    "question": "중복 가능성이 있다면?",
+    "choices": [
+      "처리 이력을 대조한다",
+      "그대로 진행한다",
+      "자료를 폐기한다"
+    ],
+    "answer": 0,
+    "tip": "기존 처리 이력과 거래 내용을 대조합니다."
+  },
+  {
+    "location": "계좌 변경",
+    "avatar": "🧑‍💼",
+    "speaker": "행정담당자",
+    "title": "계좌 변경 요청",
+    "dialogue": "거래처에서 계좌가 바뀌었다고 연락이 왔습니다.",
+    "question": "무엇을 하시겠습니까?",
+    "choices": [
+      "연락만 믿고 변경한다",
+      "진위와 승인된 확인 절차를 검토한다",
+      "기존 자료를 삭제한다"
+    ],
+    "answer": 1,
+    "tip": "지급정보 변경에는 별도의 확인이 필요합니다."
+  },
+  {
+    "location": "시스템 장애",
+    "avatar": "👩‍💼",
+    "speaker": "재정담당관",
+    "title": "시스템이 멈췄어요!",
+    "dialogue": "시스템이 작동하지 않아요! 어떻게 하죠?",
+    "question": "적절한 대응은?",
+    "choices": [
+      "기록 없이 임의로 처리한다",
+      "장애를 보고하고 승인된 대응 절차를 확인한다",
+      "타인 계정을 빌린다"
+    ],
+    "answer": 1,
+    "tip": "시스템 장애 시에도 통제 절차를 유지해야 합니다."
+  },
+  {
+    "location": "감사 점검",
+    "avatar": "🕵️",
+    "speaker": "감사관",
+    "title": "자료가 일치하지 않네요",
+    "dialogue": "집행 자료와 관리 기록에 차이가 있습니다.",
+    "question": "어떻게 대응하시겠습니까?",
+    "choices": [
+      "차이를 숨긴다",
+      "원인을 확인하고 정당한 조치를 진행한다",
+      "숫자만 임의로 수정한다"
+    ],
+    "answer": 1,
+    "tip": "정확성과 추적 가능성이 중요합니다."
+  },
+  {
+    "location": "최종 평가",
+    "avatar": "👨‍✈️",
+    "speaker": "지휘관",
+    "title": "마지막 질문",
+    "dialogue": "재정담당관에게 가장 중요한 자세는 무엇인가?",
+    "question": "어떤 답변이 가장 적절합니까?",
+    "choices": [
+      "속도를 위해 검토를 생략한다",
+      "책임을 피하기 위해 업무를 회피한다",
+      "규정을 이해하고 책임 있게 처리한다"
+    ],
+    "answer": 2,
+    "tip": "적법성·정확성·책임성이 중요합니다."
+  }
+];
+
+let idx=0,score=0,trust=50,locked=false,history=[],voiceOn=true,soundOn=true,audio=null,musicOn=true,musicTimer=null,musicStep=0,musicGain=null;const $=id=>document.getElementById(id);function show(id){$(id).classList.remove('hidden')}function hide(id){$(id).classList.add('hidden')}function toggleVoice(){voiceOn=!voiceOn;$('voice').textContent=voiceOn?'🔊 음성 켜짐':'🔇 음성 꺼짐';if(!voiceOn&&'speechSynthesis'in window)speechSynthesis.cancel();else if(voiceOn&&!$('game').classList.contains('hidden'))speak(scenes[idx].dialogue)}function toggleSound(){soundOn=!soundOn;$('sound').textContent=soundOn?'🎵 효과음 켜짐':'🔕 효과음 꺼짐'}function toggleMusic(){musicOn=!musicOn;$('music').textContent=musicOn?'🎼 배경음악 켜짐':'🔇 배경음악 꺼짐';if(musicOn)startMusic();else stopMusic()}
+function musicNote(hz,start,duration,vol){if(!audio||!musicGain)return;let o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.value=hz;g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(vol,start+.16);g.gain.setValueAtTime(vol,start+duration*.65);g.gain.exponentialRampToValueAtTime(.0001,start+duration);o.connect(g).connect(musicGain);o.start(start);o.stop(start+duration+.03)}
+function startMusic(){if(!musicOn||musicTimer!==null)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!audio)audio=new C();audio.resume();musicGain=audio.createGain();musicGain.gain.value=.23;musicGain.connect(audio.destination);const chords=[[261.63,329.63,392],[220,261.63,349.23],[174.61,261.63,349.23],[196,246.94,392]];function playBar(){if(!musicOn||!musicGain)return;let now=audio.currentTime+.04,c=chords[musicStep%chords.length];musicNote(c[0]/2,now,2.7,.035);for(let i=0;i<4;i++)musicNote(c[i%3],now+i*.7,.9,.024);musicStep++}playBar();musicTimer=setInterval(playBar,2800)}catch(e){}}
+function stopMusic(){if(musicTimer!==null){clearInterval(musicTimer);musicTimer=null}if(musicGain){try{musicGain.gain.setTargetAtTime(.0001,audio.currentTime,.08);let old=musicGain;setTimeout(()=>old.disconnect(),900)}catch(e){}musicGain=null}}
+function speak(t){if(!voiceOn||!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=.92;let vs=speechSynthesis.getVoices().filter(v=>v.lang.toLowerCase().startsWith('ko'));if(vs.length)u.voice=vs[0];speechSynthesis.speak(u)}function beep(type){if(!soundOn)return;try{let C=window.AudioContext||window.webkitAudioContext;if(!C)return;if(!audio)audio=new C();if(audio.state==='suspended')audio.resume();let now=audio.currentTime;let notes=type==='win'?[523,659,784]:type==='lose'?[260,195]:[440,660];notes.forEach((hz,i)=>{let o=audio.createOscillator(),g=audio.createGain();o.type=type==='lose'?'triangle':'sine';o.frequency.value=hz;g.gain.setValueAtTime(.0001,now+i*.12);g.gain.exponentialRampToValueAtTime(.12,now+i*.12+.015);g.gain.exponentialRampToValueAtTime(.0001,now+i*.12+.17);o.connect(g).connect(audio.destination);o.start(now+i*.12);o.stop(now+i*.12+.18)})}catch(e){}}function startGame(){idx=0;score=0;trust=50;history=[];hide('start');hide('result');show('game');startMusic();render()}function render(){locked=false;let s=scenes[idx];$('mission').textContent='MISSION '+(Math.floor(idx/2)+1)+' / 5';$('score').textContent='⭐ 경험치 '+score;$('trust').textContent='🛡️ 신뢰도 '+trust;$('progress').style.width=idx*10+'%';['location','avatar','speaker','dialogue','title','question'].forEach(k=>$(k).textContent=s[k]);let box=$('choices');box.replaceChildren();s.choices.forEach((c,i)=>{let b=document.createElement('button');b.className='choice';b.textContent=(i+1)+'. '+c;b.onclick=()=>choose(i,b);box.appendChild(b)});$('feedback').style.display='none';hide('next');beep('open');speak(s.dialogue)}function choose(i,b){if(locked)return;locked=true;let s=scenes[idx],ok=i===s.answer;history.push(ok);if(ok){score+=10;trust=Math.min(100,trust+5)}else trust=Math.max(0,trust-5);document.querySelectorAll('.choice').forEach(x=>x.disabled=true);b.classList.add('selected');$('score').textContent='⭐ 경험치 '+score;$('trust').textContent='🛡️ 신뢰도 '+trust;$('feedback').textContent=(ok?'🎉 임무 성공! +10 XP':'⚠️ 아쉬운 선택입니다.')+'\n'+s.tip;$('feedback').style.whiteSpace='pre-line';$('feedback').style.display='block';$('feedback').style.borderLeftColor=ok?'#7de4bc':'#ff8d89';show('next');beep(ok?'win':'lose');if(ok){let x=document.createElement('div');x.className='burst';x.textContent='⭐';document.body.appendChild(x);setTimeout(()=>x.remove(),1000)}speak((ok?'임무 성공. ':'다시 생각해 봅시다. ')+s.tip)}function nextScene(){if(!locked)return;idx++;if(idx>=scenes.length)finish();else render()}function finish(){stopMusic();if('speechSynthesis'in window)speechSynthesis.cancel();hide('game');show('result');let grade=score>=90?'S · 전설의 재정 수호자':score>=70?'A · 우수 재정담당관':score>=50?'B · 성장하는 담당관':'C · 복습이 필요한 담당관';$('grade').textContent=grade;$('summary').textContent='최종 경험치 '+score+'/100 · 신뢰도 '+trust;let wrong=history.map((x,i)=>x?null:i+1).filter(x=>x!==null);$('review').textContent=wrong.length?'복습 권장 상황: '+wrong.join(', ')+'번':'모든 상황에서 적절한 판단을 선택했습니다!';beep('win')}function saveResult(){let t='미션! 재정담당관의 하루 2.2\n'+$('grade').textContent+'\n'+$('summary').textContent+'\n'+$('review').textContent;let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download='재정담당관_게임결과.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}document.addEventListener('keydown',e=>{if($('game').classList.contains('hidden'))return;if(!locked&&['1','2','3'].includes(e.key)){let b=document.querySelectorAll('.choice')[Number(e.key)-1];if(b)b.click()}else if(locked&&e.key==='Enter')nextScene()});
+</script></body></html>
